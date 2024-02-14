@@ -1,7 +1,9 @@
 import { View, Text, Button } from 'react-native'
 import React, { useRef } from 'react'
 import LottieView from 'lottie-react-native';
+import Animated, { ZoomOut } from 'react-native-reanimated';
 
+const AnimatedLottieView = Animated.createAnimatedComponent(LottieView)
 const AnimatedSplashScreen = ({
     onAnimationFinish = (isCancelled) => { },
 }: {
@@ -10,7 +12,8 @@ const AnimatedSplashScreen = ({
     const animation = useRef<LottieView>(null);
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'black' }}>
-            <LottieView
+            <AnimatedLottieView
+                exiting={ZoomOut}
                 onAnimationFinish={onAnimationFinish}
                 loop={false}
                 autoPlay
