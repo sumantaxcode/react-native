@@ -9,11 +9,16 @@ import {
   AmaticSC_400Regular,
   AmaticSC_700Bold,
 } from "@expo-google-fonts/amatic-sc";
-import { useEffect } from "react";
-
-SplashScreen.preventAutoHideAsync();
+import { useEffect, useState } from "react";
+import AnimatedSplashScreen from "@/components/day4/AnimatedSplashScreen";
+import Animated, {
+  FadeIn,
+} from "react-native-reanimated";
+// SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [appReady, setAppReady] = useState(false)
+  const [splashAnimationFinished, setSplashAnimationFinished] = useState(false)
   let [fontsLoaded, fontError] = useFonts({
     Inter: Inter_900Black,
     InterSemi: Inter_600SemiBold,
@@ -24,15 +29,22 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (fontsLoaded || fontError) {
-      SplashScreen.hideAsync();
+      // SplashScreen.hideAsync();
+      setAppReady(true)
     }
   }, [fontsLoaded, fontError]);
-  if (!fontsLoaded && !fontError) {
-    return null;
+  if (!appReady || !splashAnimationFinished) {
+    return (<AnimatedSplashScreen onAnimationFinish={(isCancelled) => {
+      if (!isCancelled) {
+        setSplashAnimationFinished(true)
+      }
+    }} />);
   }
   return (
-    <Stack screenOptions={{}}>
-      <Stack.Screen name="index" options={{ title: "Startup" }} />
-    </Stack>
+    <Animated.View style={{ flex: 1 }} entering={FadeIn}>
+      <Stack screenOptions={{}}>
+        <Stack.Screen name="index" options={{ title: "Startup" }} />
+      </Stack>
+    </Animated.View>
   );
 }
