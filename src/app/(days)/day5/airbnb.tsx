@@ -60,6 +60,7 @@ const AirbnbScreen = () => {
                 right: 10,
                 left: 10,
               }}
+              changeLatLong={changeLatLong}
             />
           </View>
           <View
