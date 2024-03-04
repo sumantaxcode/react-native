@@ -4,14 +4,17 @@ import {
   StyleSheet,
   Text,
   View,
+  ImageBackground
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import ForecastItem from "@/components/day8/ForecastItem";
+import { Stack } from "expo-router";
+import LottieView from 'lottie-react-native';
 
 const BASE_URL = "https://api.openweathermap.org/data/2.5";
 const API_KEY = process.env.EXPO_PUBLIC_OPENWEATHER_KEY;
-
+const BG_IMG = 'https://images.unsplash.com/photo-1707870771435-50d769227de9?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 type MainWeather = {
   temp: number;
   feels_like: number;
@@ -25,6 +28,12 @@ type MainWeather = {
 type Weather = {
   name: string;
   main: MainWeather;
+  weather:[{
+    id: string,  
+    main: string,
+    description: string,
+    icon: string
+  }]
 };
 
 export type ForecastWeather = {
@@ -90,7 +99,13 @@ const WeatherScreen = () => {
     return <ActivityIndicator />;
   }
   return (
-    <View style={styles.container}>
+    <ImageBackground source={{uri:BG_IMG}} style={styles.container}>
+      <Stack.Screen options={{headerShown:false}}/>
+      <LottieView source={weather.weather[0].main =='Rain'?
+        require('@assets/lottie/rainy.json'): require('@assets/lottie/sunny.json')} 
+        style={{width:200, aspectRatio:1}} loop autoPlay/>
+
+      <View style={{...StyleSheet.absoluteFillObject, backgroundColor:'rgba(0,0,0,0.5)'}}/>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Text style={styles.location}>{weather.name}</Text>
         <Text style={styles.temp}>{weather?.main?.temp}°</Text>
@@ -104,12 +119,12 @@ const WeatherScreen = () => {
         }}
         style={{
           flexGrow: 0,
-          height: 200,
+          height: 150,
           marginBottom: 40,
         }}
         renderItem={({ item }) => <ForecastItem forecast={item} />}
       />
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -125,10 +140,11 @@ const styles = StyleSheet.create({
   location: {
     fontFamily: "InterSemi",
     fontSize: 30,
+    color:'white'
   },
   temp: {
     fontFamily: "InterBold",
     fontSize: 70,
-    color: "gray",
+    color: "#FEFEFE",
   },
 });
