@@ -11,14 +11,13 @@ import {
 } from "@expo-google-fonts/amatic-sc";
 import { useEffect, useState } from "react";
 import AnimatedSplashScreen from "@/components/day4/AnimatedSplashScreen";
-import Animated, {
-  FadeIn,
-} from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
+import BiometricsProvider from "@/components/day10/BiometricsProvider";
 // SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [appReady, setAppReady] = useState(false)
-  const [splashAnimationFinished, setSplashAnimationFinished] = useState(false)
+  const [appReady, setAppReady] = useState(false);
+  const [splashAnimationFinished, setSplashAnimationFinished] = useState(false);
   let [fontsLoaded, fontError] = useFonts({
     Inter: Inter_900Black,
     InterSemi: Inter_600SemiBold,
@@ -30,21 +29,27 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded || fontError) {
       // SplashScreen.hideAsync();
-      setAppReady(true)
+      setAppReady(true);
     }
   }, [fontsLoaded, fontError]);
   if (!appReady || !splashAnimationFinished) {
-    return (<AnimatedSplashScreen onAnimationFinish={(isCancelled) => {
-      if (!isCancelled) {
-        setSplashAnimationFinished(true)
-      }
-    }} />);
+    return (
+      <AnimatedSplashScreen
+        onAnimationFinish={(isCancelled) => {
+          if (!isCancelled) {
+            setSplashAnimationFinished(true);
+          }
+        }}
+      />
+    );
   }
   return (
-    <Animated.View style={{ flex: 1 }} entering={FadeIn}>
-      <Stack screenOptions={{}}>
-        <Stack.Screen name="index" options={{ title: "Startup" }} />
-      </Stack>
-    </Animated.View>
+    <BiometricsProvider>
+      <Animated.View style={{ flex: 1 }} entering={FadeIn}>
+        <Stack screenOptions={{}}>
+          <Stack.Screen name="index" options={{ title: "Startup" }} />
+        </Stack>
+      </Animated.View>
+    </BiometricsProvider>
   );
 }
